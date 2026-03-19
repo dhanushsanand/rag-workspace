@@ -134,6 +134,19 @@ function tokenize(query:string):string[]{
   return arr || [];
 }
 
+function tokenizeQuery(query:string): string[]{
+  const arr = tokenize(query);
+  const setOfTokens = new Set<string>();
+  let deduplicatedArray = new Array();
+  arr.forEach(token=>{
+    if(!setOfTokens.has(token)){
+      deduplicatedArray.push(token);
+      setOfTokens.add(token);
+    }
+  });
+  return deduplicatedArray;
+}
+
 app.post("/api/search", (req, res)=>{
   const {query, topK, tag} = req.body;
 });
