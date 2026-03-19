@@ -147,6 +147,18 @@ function tokenizeQuery(query:string): string[]{
   return deduplicatedArray;
 }
 
+function calculateScore(document:Document, tokens:string[], query:string):number{
+  const titleTokens = tokenize(document.title);
+  const contentTokens = tokenize(document.content);
+  const titleTokenHits = titleTokens.filter(token=>{tokens.includes(token)}).length;
+  const contentTokenHits = contentTokens.filter(token=> tokens.includes(token)).length;
+  let titleSubstringBonus = 0;
+  if(document.title.toLowerCase().includes(query)) titleSubstringBonus = 2;
+  let contentSubstringBonus = 0;
+  if(document.content.toLowerCase().includes(query)) contentSubstringBonus = 5;
+  return titleTokenHits * 3 + contentTokenHits + titleSubstringBonus + contentSubstringBonus;
+}
+
 app.post("/api/search", (req, res)=>{
   const {query, topK, tag} = req.body;
 });
